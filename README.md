@@ -4,7 +4,11 @@ Servicio de pronóstico del nivel del tanque a 1 a 3 días con **Chronos** (cuan
 
 ## Estado
 
-**Fase 6: pronóstico con Chronos.** `POST /v1/forecasts` re-muestrea la serie a un valor por día en `America/Bogota`, la envía a Chronos (por defecto `autogluon/chronos-2-small`, en CPU) y devuelve `p10`, `p50` y `p90` de los días siguientes. Protegido con token de servicio rotable. Especificación: [Módulo de IA](https://github.com/NicoalsD/caudal-backend/blob/develop/docs/Modulo-IA.md) y [Contrato backend-IA](https://github.com/NicoalsD/caudal-backend/blob/develop/docs/Contrato-IA.md). El backtest offline (Fase 10) compara Chronos con la estimación simple: [guía](.agents/evaluation.md). La imagen Docker (Fase 12) se despliega en Render free con `amazon/chronos-bolt-tiny` y `render.yaml`: [despliegue](.agents/deployment.md#2-render-gratis-despliegue-actual).
+**Implementado y desplegado** (fases 6, 10 y 12; verificado el 2026-11-16 en `develop`, `0b153ae`: **177 pruebas** pasan con `uv run pytest -q` y `ruff check` está limpio; en Render, `/v1/health` y `/v1/ready` responden 200). `POST /v1/forecasts` re-muestrea la serie a un valor por día en `America/Bogota`, la envía a Chronos (por defecto `autogluon/chronos-2-small`, en CPU) y devuelve `p10`, `p50` y `p90` de los días siguientes. Protegido con token de servicio rotable. Especificación: [Módulo de IA](https://github.com/NicoalsD/caudal-backend/blob/develop/docs/Modulo-IA.md) y [Contrato backend-IA](https://github.com/NicoalsD/caudal-backend/blob/develop/docs/Contrato-IA.md). El backtest offline (Fase 10) compara Chronos con la estimación simple: [guía](.agents/evaluation.md). La imagen Docker (Fase 12) se despliega en Render free con `amazon/chronos-bolt-tiny` y `render.yaml`: [despliegue](.agents/deployment.md#2-render-gratis-despliegue-actual).
+
+## Arranque rápido
+
+Con el sistema completo (los cuatro repositorios como carpetas hermanas), desde `caudal-backend`: `make up` construye esta imagen y la expone en http://localhost:8000 (puerto interno 7860), con el mismo `IA_SERVICE_TOKEN` que la API; `make smoke` comprueba `/v1/health` y que `POST /v1/forecasts` sin token responde 401. Guía: [Arranque local](https://github.com/Jenifrutica/caudal-backend/blob/develop/docs/Arranque-local.md). Por qué la IA es un servicio aparte: [ADR-003](https://github.com/Jenifrutica/caudal-backend/blob/develop/docs/ADRs/ADR-003-pronostico-en-servicio-externo.md).
 
 ## Uso local
 
